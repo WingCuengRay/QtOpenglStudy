@@ -38,20 +38,26 @@ void NeHeWidget::paintGL()
                                       //原本的绘制点是在屏幕中心(0,0)处的
     glTranslatef(-1.5, 0.0, -6.0);    //将绘制点向屏幕左偏移1.5个单位，向屏幕深处移入6个单位
     glBegin(GL_TRIANGLES);
-//    glVertex3f(0.0, 1.0, 0.0);
-//    glVertex3f(-1.0, -1.0, 0.0);
-//    glVertex3f(1.0, -1.0, 0.0);
+
+    glColor3f(1.0, 0.0, 0.0);   //三个参数分别代表红，绿，蓝
+                                //1最亮， 0最暗
     glVertex3f(0.0, 0.0, 0);
+
+    glColor3f(0.0, 1.0, 0.0);
     glVertex3f(1.0, 0.0, 0);
+
+    glColor3f(0.0, 0.0, 1.0);
     glVertex3f(1.0, 1.0, 0);
     glEnd();
+    //每个顶点都有不同的颜色，因此看起来颜色是从每个角喷出来的
 
-    glBegin(GL_QUADS);
-    glVertex3f(-1.0, 1.0, 0.0);
-    glVertex3f(1.0, 1.0, 0.0);
-    glVertex3f(1.0, -1.0, 0.0);
-    glVertex3f(-1.0, -1.0, 0.0);
-    glEnd();
+    //前面最后设置为了蓝色，所以下面的正方形会是纯蓝色的
+//    glBegin(GL_QUADS);
+//    glVertex3f(-1.0, 1.0, 0.0);
+//    glVertex3f(1.0, 1.0, 0.0);
+//    glVertex3f(1.0, -1.0, 0.0);
+//    glVertex3f(-1.0, -1.0, 0.0);
+//    glEnd();
 
 }
  // 重置OpenGL窗口大小
