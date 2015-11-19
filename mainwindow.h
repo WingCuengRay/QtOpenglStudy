@@ -18,9 +18,11 @@ public:
     ~MainWindow();
 
 protected:
-    bool fullscreen;
     //处理键盘事件
     void keyPressEvent( QKeyEvent *e );
+    bool fullscreen;
+
+
 private:
     NeHeWidget *neheWidget ;
 

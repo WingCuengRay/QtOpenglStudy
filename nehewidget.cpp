@@ -3,9 +3,16 @@
 #include <QtOpenGL/QGLWidget>
 #include <GL/glu.h>
 
-NeHeWidget::NeHeWidget(QWidget *parent) :
+NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
     QGLWidget(parent)
 {
+    rTri = 0.0;
+    rQuad = 0.0;
+    fullscreen = fs;
+    setGeometry(0, 0, 640, 480);    //从左上角(0,0)开始，到右下角(640,480)
+
+    if(fullscreen)
+        showFullScreen();
 }
 
 NeHeWidget::~NeHeWidget()
@@ -35,8 +42,13 @@ void NeHeWidget::paintGL()
     //缺少了GL_DEPTH_BUFFER_BIT则不能正常显示
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-                                      //原本的绘制点是在屏幕中心(0,0)处的
+
     glTranslatef(-1.5, 0.0, -6.0);    //将绘制点向屏幕左偏移1.5个单位，向屏幕深处移入6个单位
+//    glRotatef(90, 0.0, 1.0, 0.0);
+    glRotatef(rTri, 0.0, 1.0, 0.0);
+//  glRotatef( Angle, Xvector, Yvector, Zvector )
+//  后三个参数确定一个向量，此为旋转的中心。 Angle确定旋转的角度，0~360
+                                      //原本的绘制点是在屏幕中心(0,0)处的
     glBegin(GL_TRIANGLES);
 
     glColor3f(1.0, 0.0, 0.0);   //三个参数分别代表红，绿，蓝
@@ -51,14 +63,20 @@ void NeHeWidget::paintGL()
     glEnd();
     //每个顶点都有不同的颜色，因此看起来颜色是从每个角喷出来的
 
-    //前面最后设置为了蓝色，所以下面的正方形会是纯蓝色的
-//    glBegin(GL_QUADS);
-//    glVertex3f(-1.0, 1.0, 0.0);
-//    glVertex3f(1.0, 1.0, 0.0);
-//    glVertex3f(1.0, -1.0, 0.0);
-//    glVertex3f(-1.0, -1.0, 0.0);
-//    glEnd();
+    glLoadIdentity();         //如果没有此函数充值观察模型，会出现意料之外的情况
+    glTranslatef(1.5, 0.0, -6.0);
+    glRotatef(45, 1.0, 0.0, 0.0);
 
+    //前面最后设置为了蓝色，所以下面的正方形会是纯蓝色的
+    glBegin(GL_QUADS);
+    glVertex3f(-1.0, 1.0, 0.0);
+    glVertex3f(1.0, 1.0, 0.0);
+    glVertex3f(1.0, -1.0, 0.0);
+    glVertex3f(-1.0, -1.0, 0.0);
+    glEnd();
+
+    rTri += 0.2;
+    rQuad -= 0.15;
 }
  // 重置OpenGL窗口大小
 void NeHeWidget::resizeGL(int width, int height)

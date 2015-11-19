@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
       break;
     }
 
-    NeHeWidget w;
+    NeHeWidget w((QWidget *)0, fs);
 
     w.show();
 
