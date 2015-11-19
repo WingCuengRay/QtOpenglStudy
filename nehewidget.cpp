@@ -27,22 +27,31 @@ void NeHeWidget::initializeGL()
     // 告诉系统对透视进行修正
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 }
+
+
+
 void NeHeWidget::paintGL()
 {
-    // 清除屏幕和深度缓存
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    //坐标转移
-    glTranslatef(-1.5f,0.0f,-6.0f);
-    //设置颜色
-    glColor3f( 1.0, 1.0, 1.0 );
-    //绘制一个正方形
-    glBegin( GL_QUADS );
-    glVertex3f( -1.0,  1.0,  0.0 );
-    glVertex3f(  1.0,  1.0,  0.0 );
-    glVertex3f(  1.0, -1.0,  0.0 );
-    glVertex3f( -1.0, -1.0,  0.0 );
+                                      //原本的绘制点是在屏幕中心(0,0)处的
+    glTranslatef(-1.5, 0.0, -6.0);    //将绘制点向屏幕左偏移1.5个单位，向屏幕深处移入6个单位
+    glBegin(GL_TRIANGLES);
+//    glVertex3f(0.0, 1.0, 0.0);
+//    glVertex3f(-1.0, -1.0, 0.0);
+//    glVertex3f(1.0, -1.0, 0.0);
+    glVertex3f(0.0, 0.0, 0);
+    glVertex3f(1.0, 0.0, 0);
+    glVertex3f(1.0, 1.0, 0);
     glEnd();
+
+    glBegin(GL_QUADS);
+    glVertex3f(-1.0, 1.0, 0.0);
+    glVertex3f(1.0, 1.0, 0.0);
+    glVertex3f(1.0, -1.0, 0.0);
+    glVertex3f(-1.0, -1.0, 0.0);
+    glEnd();
+
 }
  // 重置OpenGL窗口大小
 void NeHeWidget::resizeGL(int width, int height)
