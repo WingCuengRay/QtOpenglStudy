@@ -32,6 +32,7 @@ void NeHeWidget::initializeGL()
 
 void NeHeWidget::paintGL()
 {
+    //缺少了GL_DEPTH_BUFFER_BIT则不能正常显示
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
                                       //原本的绘制点是在屏幕中心(0,0)处的
