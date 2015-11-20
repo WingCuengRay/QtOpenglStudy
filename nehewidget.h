@@ -20,10 +20,12 @@ protected:
     //响应窗口的大小变化
     void resizeGL( int width, int height );
     void LoadGLTextures();
+    void keyPressEvent(QKeyEvent *e);
 
     bool fullscreen;
-    GLfloat rTri,rQuad;
-    GLfloat xRot, yRot, zRot;
+    bool light;
+    GLfloat xRot, yRot, zRot,zoom;
+    GLfloat xSpeed, ySpeed;
     GLuint texture[10];
 };
 #endif // NEHEWIDGET_H

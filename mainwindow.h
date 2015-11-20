@@ -18,8 +18,6 @@ public:
     ~MainWindow();
 
 protected:
-    //处理键盘事件
-    void keyPressEvent( QKeyEvent *e );
     bool fullscreen;
 
 

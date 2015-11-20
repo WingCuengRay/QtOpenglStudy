@@ -16,24 +16,3 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *e)
-{
-    switch ( e->key() )
-      {
-      case Qt::Key_F2:
-        fullscreen = !fullscreen;
-        if ( fullscreen )
-        {
-          showFullScreen();
-        }
-        else
-        {
-          showNormal();
-        }
-      neheWidget->updateGL();
-        break;
-      case Qt::Key_Escape:
-       close();
-        break;
-     }
-}

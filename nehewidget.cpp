@@ -4,12 +4,19 @@
 #include <GL/glu.h>
 #include <stdio.h>
 
+//半亮(0.5)白色环境光
+GLfloat lightAmbient[4] = {0, 0, 0, 1.0};
+//最亮漫射光
+GLfloat lightDiffuse[4] = {0, 0, 0, 1.0};
+//光源的位置，前三个为x,y,z坐标
+GLfloat lightPosition[4] = {0.0, 0.0, 4.0, 1.0};
+
+
 NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
     QGLWidget(parent)
 {
-    rTri = 0.0;
-    rQuad = 0.0;
     xRot = yRot = zRot = 0;
+    xSpeed = ySpeed = 0;
     fullscreen = fs;
     setGeometry(0, 0, 640, 480);    //从左上角(0,0)开始，到右下角(640,480)
     setWindowTitle("Ray's here");
@@ -45,8 +52,13 @@ void NeHeWidget::initializeGL()
     glDepthFunc( GL_LEQUAL );
     // 告诉系统对透视进行修正
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-}
 
+    // 光源设置
+    glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
+    glEnable(GL_LIGHT1);
+}
 
 
 void NeHeWidget::paintGL()
@@ -55,10 +67,10 @@ void NeHeWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    glTranslatef(0.0, 0.0, -6.0);
+    glTranslatef(0.0, 0.0, zoom);
     glRotatef(xRot, 1.0, 0.0, 0.0);
     glRotatef(yRot, 0.0, 1.0, 0.0);
-    glRotatef(zRot, 0.0, 0.0, 1.0);
+//    glRotatef(zRot, 0.0, 0.0, 1.0);
 
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glBegin(GL_QUADS);
@@ -151,9 +163,8 @@ void NeHeWidget::paintGL()
     glVertex3f(  1.0, -1.0, -1.0 );
     glEnd();
 
-    xRot += 1.5;
-    yRot += 1;
-    zRot += 2;
+    xRot += xSpeed;
+    yRot += ySpeed;
 }
 
 
@@ -200,12 +211,78 @@ void NeHeWidget::LoadGLTextures()
 
         tex = QGLWidget::convertToGLFormat(buf);
         glBindTexture(GL_TEXTURE_2D, texture[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, tex.width(), tex.height(), 0,
-                     GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);           //每绑定一个纹理都要设置该两项
+        //每绑定一个纹理都要设置该两项
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+//        glTexImage2D(GL_TEXTURE_2D, 0, 3, tex.width(), tex.height(), 0,
+//                     GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
+
+//      用gluBuild2DMipmaps() 缩小后的效果比glTexImage2D的好。
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.width(), tex.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
+
+
+
     }
 
     return;
+}
+
+
+
+void NeHeWidget::keyPressEvent(QKeyEvent *e)
+{
+    switch ( e->key() )
+    {
+    case Qt::Key_F4:
+        light = !light;
+        if(!light)
+            glDisable(GL_LIGHTING);
+        else
+            glEnable(GL_LIGHTING);
+        updateGL();
+        break;
+
+    case Qt::Key_PageUp:
+        zoom += 0.2;
+        updateGL();
+        break;
+
+    case Qt::Key_PageDown:
+        zoom -= 0.2;
+        updateGL();
+        break;
+
+    case Qt::Key_Up:
+        xSpeed += 0.01;
+        updateGL();
+        break;
+
+    case Qt::Key_Down:
+        xSpeed -= 0.01;
+        updateGL();
+        break;
+
+    case Qt::Key_Right:
+        ySpeed += 0.01;
+        updateGL();
+        break;
+
+    case Qt::Key_Left:
+        ySpeed -= 0.01;
+        updateGL();
+        break;
+
+    case Qt::Key_F2:
+        fullscreen = !fullscreen;
+        if ( fullscreen )
+            showFullScreen();
+        else
+            showNormal();
+        updateGL();
+        break;
+
+    case Qt::Key_Escape:
+        close();
+        break;
+    }
 }
