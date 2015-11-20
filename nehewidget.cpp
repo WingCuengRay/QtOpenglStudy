@@ -53,26 +53,87 @@ void NeHeWidget::paintGL()
 
     glColor3f(1.0, 0.0, 0.0);   //三个参数分别代表红，绿，蓝
                                 //1最亮， 0最暗
-    glVertex3f(0.0, 0.0, 0);
-
+    glVertex3f(0.0, 1.0, 0);
     glColor3f(0.0, 1.0, 0.0);
-    glVertex3f(1.0, 0.0, 0);
-
+    glVertex3f(-1.0, -1.0, 1);
     glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(1.0, 1.0, 0);
+    glVertex3f(1.0, -1.0, 1);
+
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(0.0, 1.0, 0.0);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(1.0, -1.0, 1.0);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3f(1.0, -1.0, -1.0);
+
+    glColor3f( 1.0, 0.0, 0.0 );
+    glVertex3f(  0.0,  1.0,  0.0 );
+    glColor3f( 0.0, 1.0, 0.0 );
+    glVertex3f(  1.0, -1.0, -1.0 );
+    glColor3f( 0.0, 0.0, 1.0 );
+    glVertex3f( -1.0, -1.0, -1.0 );
+
+    glColor3f( 1.0, 0.0, 0.0 );
+     glVertex3f(  0.0,  1.0,  0.0 );
+     glColor3f( 0.0, 0.0, 1.0 );
+     glVertex3f( -1.0, -1.0, -1.0 );
+     glColor3f( 0.0, 1.0, 0.0 );
+     glVertex3f( -1.0, -1.0,  1.0 );
+
     glEnd();
     //每个顶点都有不同的颜色，因此看起来颜色是从每个角喷出来的
 
     glLoadIdentity();         //如果没有此函数充值观察模型，会出现意料之外的情况
     glTranslatef(1.5, 0.0, -6.0);
-    glRotatef(45, 1.0, 0.0, 0.0);
+    glRotatef(rQuad, 1.0, 0.0, 0.0);
 
     //前面最后设置为了蓝色，所以下面的正方形会是纯蓝色的
     glBegin(GL_QUADS);
-    glVertex3f(-1.0, 1.0, 0.0);
-    glVertex3f(1.0, 1.0, 0.0);
-    glVertex3f(1.0, -1.0, 0.0);
-    glVertex3f(-1.0, -1.0, 0.0);
+    //注意4个顶点的顺序要按照逆时针的顺序。
+
+    //顶面
+    glColor3f(0, 1.0, 0);
+    glVertex3f(  1.0,   1.0,    -1.0);
+    glVertex3f( -1.0,   1.0,    -1.0);
+    glVertex3f( -1.0,   1.0,     1.0);
+    glVertex3f(  1.0,   1.0,     1.0);
+
+    //底面
+    glColor3f(1.0, 0.5, 0.0);
+    glVertex3f(1.0, -1.0, 1.0);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(1.0, -1.0, -1.0);
+
+    //前面
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(1.0, 1.0, 1.0);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glVertex3f(1.0, -1.0, 1.0);
+
+    //后面
+    glColor3f(1.0, 1.0, 0.0);
+    glVertex3f(1.0, 1.0, -1.0);
+    glVertex3f(1.0, -1.0, -1.0);
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(-1.0, 1.0, -1.0);
+
+    //左面
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glVertex3f(-1.0, 1.0, -1.0);
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(-1.0, -1.0, 1.0);
+
+    //右面
+    glColor3f( 1.0, 0.0, 1.0 );
+    glVertex3f(  1.0,  1.0, -1.0 );
+    glVertex3f(  1.0,  1.0,  1.0 );
+    glVertex3f(  1.0, -1.0,  1.0 );
+    glVertex3f(  1.0, -1.0, -1.0 );
+
+
     glEnd();
 
     rTri += 0.2;
