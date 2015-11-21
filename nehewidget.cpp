@@ -25,6 +25,7 @@ NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
     if(fullscreen)
         showFullScreen();
     light = false;          //不能缺少初始化语句！！！
+    bend = false;
 
     //增加定时器，实现动画功能
     QTimer *timer;
@@ -60,6 +61,9 @@ void NeHeWidget::initializeGL()
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
     glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
     glEnable(GL_LIGHT1);
+
+    glColor4f(1.0, 1.0, 1.0, 0.5);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 }
 
 
@@ -285,5 +289,20 @@ void NeHeWidget::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Escape:
         close();
         break;
+
+    case Qt::Key_B:
+        bend = !bend;
+        if(bend)
+        {
+            //开启融合（在绘制透明对象时）需要关闭深度缓存。
+            glEnable(GL_BLEND);
+            glDisable(GL_DEPTH_TEST);
+        }
+        else
+        {
+            glDisable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+        }
+        updateGL();
     }
 }

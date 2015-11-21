@@ -24,6 +24,7 @@ protected:
 
     bool fullscreen;
     bool light;
+    bool bend;
     GLfloat xRot, yRot, zRot,zoom;
     GLfloat xSpeed, ySpeed;
     GLuint texture[10];
