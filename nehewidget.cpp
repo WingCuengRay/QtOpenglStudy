@@ -17,6 +17,7 @@ NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
 {
     xRot = yRot = zRot = 0;
     zoom = -15;
+    tilt = 90;
     spin = 0.0;
     loop = 0;
     twinkle = false;
@@ -41,18 +42,17 @@ void NeHeWidget::initializeGL()
     LoadGLTextures();
     glEnable(GL_TEXTURE_2D);
 
-     // 启用阴影平滑
-    glShadeModel( GL_SMOOTH );
-    // 黑色背景
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
-    // 设置深度缓存
-    glClearDepth( 1.0 );
-     // 启用深度测试
-    glEnable( GL_DEPTH_TEST );
-    // 所作深度测试的类型
-    glDepthFunc( GL_LEQUAL );
-    // 告诉系统对透视进行修正
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+    glShadeModel( GL_SMOOTH );      // 启用阴影平滑
+    glClearColor( 0.0, 0.0, 0.0, 0.5 );         // 黑色背景，alpha值是 0.5,半透明
+    glClearDepth( 1.0 );            // 设置深度缓存
+    glEnable( GL_DEPTH_TEST );      // 启用深度测试
+    glDisable(GL_DEPTH_TEST);
+    glDepthFunc( GL_LEQUAL );       // 所作深度测试的类型
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );    // 告诉系统对透视进行修正
+
+    //必须要用色彩融合使图片能够透视，否则边框会掩盖其他图片
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);
 
     // 光源设置
     glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
@@ -81,22 +81,26 @@ void NeHeWidget::paintGL()
     {
         glLoadIdentity();
         glTranslatef(0.0, 0.0, zoom);
-        glRotatef(tilt, 1.0, 0.0, 0.0);
-        glRotatef(star[loop].angle, 0.0, 1.0, 0.0);
+        glRotatef(tilt, 1.0, 0.0, 0.0);         //初始时候，绕x轴旋转90度
+                                                //y轴由屏幕里指向外，z轴指向下。x轴不变
+        glRotatef(star[loop].angle, 0.0, 1.0, 0.0);     //绕y轴旋转。x轴指向与屏幕法向量在同一平面中的任意方向，形成旋转效果
         glTranslatef(star[loop].dist, 0.0, 0.0);
 
         glRotatef(-star[loop].angle, 0.0, 1.0, 0.0);
         glRotatef(-tilt, 1.0, 0.0, 0.0);
+        //至此，x,y,z轴的方向都相当于没变，只是绘制点（0,0）被改变了
+
         if(twinkle)
         {
             glColor4ub(star[num-loop-1].r, star[num-loop-1].g, star[num-loop-1].b, 255);
             glBegin(GL_QUADS);
             glTexCoord2f(0.0, 0.0);     glVertex3f(-1.0, -1.0, 0.0);
             glTexCoord2f(1.0, 0.0);     glVertex3f(1.0, -1.0, 0.0);
-            glTexCoord2f( 1.0, 1.0 );   glVertex3f( 1.0, 1.0, 0.0 );
+            glTexCoord2f( 1.0, 1.0 );   glVertex3f(0.0, 1.0, 0.0 );
             glTexCoord2f( 0.0, 1.0 );   glVertex3f( -1.0, 1.0, 0.0 );
             glEnd();
         }
+
         glRotatef( spin, 0.0, 0.0, 1.0 );
         glColor4ub( star[loop].r, star[loop].g, star[loop].b, 255 );
         glBegin( GL_QUADS );
@@ -105,6 +109,7 @@ void NeHeWidget::paintGL()
           glTexCoord2f( 1.0, 1.0 ); glVertex3f( 1.0, 1.0, 0.0 );
           glTexCoord2f( 0.0, 1.0 ); glVertex3f( -1.0, 1.0, 0.0 );
         glEnd();
+
         spin += 0.01;
         star[loop].angle += float(loop)/num;
         star[loop].dist -= 0.01;
@@ -116,6 +121,7 @@ void NeHeWidget::paintGL()
             star[loop].b = rand() % 256;
         }
     }
+    //glRotatef(90, 0, 0, 1);
 
 }
 
@@ -187,6 +193,16 @@ void NeHeWidget::keyPressEvent(QKeyEvent *e)
 
     case Qt::Key_PageDown:
         zoom -= 0.2;
+        updateGL();
+        break;
+
+    case Qt::Key_Up:
+        tilt += 0.2;
+        updateGL();
+        break;
+
+    case Qt::Key_Down:
+        tilt -= 0.2;
         updateGL();
         break;
 
