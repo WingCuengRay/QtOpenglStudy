@@ -5,11 +5,11 @@
 #include <stdio.h>
 
 //半亮(0.5)白色环境光
-GLfloat lightAmbient[4] = {0, 0, 0, 1.0};
+GLfloat lightAmbient[4] = {0.5, 0.5, 0.5, 1.0};
 //最亮漫射光
-GLfloat lightDiffuse[4] = {0, 0, 0, 1.0};
+GLfloat lightDiffuse[4] = {1.0, 1.0, 1.0, 1.0};
 //光源的位置，前三个为x,y,z坐标
-GLfloat lightPosition[4] = {0.0, 0.0, 4.0, 1.0};
+GLfloat lightPosition[4] = {0.0, 0.0, 2.0, 0.0};
 
 
 NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
@@ -17,12 +17,14 @@ NeHeWidget::NeHeWidget(QWidget *parent,bool fs) :
 {
     xRot = yRot = zRot = 0;
     xSpeed = ySpeed = 0;
+    zoom = -6;
     fullscreen = fs;
     setGeometry(0, 0, 640, 480);    //从左上角(0,0)开始，到右下角(640,480)
     setWindowTitle("Ray's here");
 
     if(fullscreen)
         showFullScreen();
+    light = false;          //不能缺少初始化语句！！！
 
     //增加定时器，实现动画功能
     QTimer *timer;
@@ -202,6 +204,7 @@ void NeHeWidget::LoadGLTextures()
         sprintf(s, "box-man%d.jpg",i+1);
         QString dir = "/home/ray/Pictures/Wallpaper/1080P/" + QString(s);
         if(!buf.load(dir))
+//        if(!buf.load("/home/ray/Downloads/opengl_qt_nehe_06/light/light1/crate.bmp"))
         {
             qWarning("Could not read image file, using single-color instead.");
             QImage dummy(128, 128, QImage::Format_RGB32);
@@ -218,10 +221,8 @@ void NeHeWidget::LoadGLTextures()
 //                     GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
 
 //      用gluBuild2DMipmaps() 缩小后的效果比glTexImage2D的好。
+//      但是对性能的要求也高，否则会出现卡的现象
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.width(), tex.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
-
-
-
     }
 
     return;
@@ -233,7 +234,7 @@ void NeHeWidget::keyPressEvent(QKeyEvent *e)
 {
     switch ( e->key() )
     {
-    case Qt::Key_F4:
+    case Qt::Key_L:
         light = !light;
         if(!light)
             glDisable(GL_LIGHTING);
